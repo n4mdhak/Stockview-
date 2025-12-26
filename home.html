@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - StockView</title>
+    <link rel="stylesheet" href="design.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">📦</span>
+                <span class="logo-text">StockView</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="home.html" class="active">Home</a></li>
+                <li><a href="aboutus.html">About Us</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Welcome to StockView</h1>
+            <p>Check product availability and prices in Ngultrum</p>
+        </div>
+    </section>
+
+    <!-- Search and Filter -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search products..." onkeyup="filterProducts()">
+                <select id="filterSelect" onchange="filterProducts()">
+                    <option value="all">All Products</option>
+                    <option value="instock">In Stock</option>
+                    <option value="outofstock">Out of Stock</option>
+                </select>
+            </div>
+            <p class="results-count" id="resultsCount">Showing 12 of 12 products</p>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="products-section">
+        <div class="container">
+            <div class="products-grid" id="productsGrid">
+                <!-- Product cards will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 StockView. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Product data
+        const products = [
+            { name: 'Samsung Galaxy S24', price: 75000, inStock: true, quantity: 15, category: 'Smartphones', image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400' },
+            { name: 'MacBook Pro 14"', price: 185000, inStock: true, quantity: 8, category: 'Laptops', image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400' },
+            { name: 'Sony WH-1000XM5', price: 28000, inStock: false, quantity: 0, category: 'Audio', image: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=400' },
+            { name: 'iPad Air 11"', price: 52000, inStock: true, quantity: 22, category: 'Tablets', image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400' },
+            { name: 'Canon EOS R6', price: 195000, inStock: true, quantity: 5, category: 'Cameras', image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400' },
+            { name: 'Apple Watch Series 9', price: 42000, inStock: false, quantity: 0, category: 'Wearables', image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400' },
+            { name: 'Dell XPS 15', price: 145000, inStock: true, quantity: 12, category: 'Laptops', image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400' },
+            { name: 'Nintendo Switch OLED', price: 32000, inStock: true, quantity: 18, category: 'Gaming', image: 'https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=400' },
+            { name: 'Bose SoundLink', price: 15000, inStock: false, quantity: 0, category: 'Audio', image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400' },
+            { name: 'Samsung 4K Monitor', price: 38000, inStock: true, quantity: 10, category: 'Monitors', image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400' },
+            { name: 'Logitech MX Master 3', price: 8500, inStock: true, quantity: 30, category: 'Accessories', image: 'https://images.unsplash.com/photo-1527814050087-3793815479db?w=400' },
+            { name: 'GoPro Hero 12', price: 45000, inStock: true, quantity: 7, category: 'Cameras', image: 'https://images.unsplash.com/photo-1519638399535-1b036603ac77?w=400' }
+        ];
+
+        function renderProducts(productsToRender) {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            
+            productsToRender.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name}">
+                        <span class="stock-badge ${product.inStock ? 'in-stock' : 'out-of-stock'}">
+                            ${product.inStock ? 'In Stock' : 'Out of Stock'}
+                        </span>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">${product.category}</div>
+                        <h3 class="product-name">${product.name}</h3>
+                        <div class="product-price">Nu. ${product.price.toLocaleString()}</div>
+                        <div class="product-quantity">${product.inStock ? product.quantity + ' units available' : 'Currently unavailable'}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            document.getElementById('resultsCount').textContent = `Showing ${productsToRender.length} of ${products.length} products`;
+        }
+
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filterValue = document.getElementById('filterSelect').value;
+
+            const filtered = products.filter(product => {
+                const matchesSearch = product.name.toLowerCase().includes(searchTerm);
+                const matchesFilter = 
+                    filterValue === 'all' ? true :
+                    filterValue === 'instock' ? product.inStock :
+                    filterValue === 'outofstock' ? !product.inStock : true;
+                
+                return matchesSearch && matchesFilter;
+            });
+
+            renderProducts(filtered);
+        }
+
+        renderProducts(products);
+    </script>
+</body>
+</html>
